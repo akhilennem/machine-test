@@ -1,0 +1,73 @@
+{
+	"info": {
+		"_postman_id": "92d98ba5-88d7-4cf2-9d46-e0965acd1d38",
+		"name": "Machine Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39194637",
+		"_collection_link": "https://dark-moon-194786.postman.co/workspace/Team-Workspace~a89d6af0-7f01-4dcb-862a-9c5af2022b36/collection/39194637-92d98ba5-88d7-4cf2-9d46-e0965acd1d38?action=share&source=collection_link&creator=39194637"
+	},
+	"item": [
+		{
+			"name": "signup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"akhil\",\r\n    \"email\":\"akhilennem@gmail.com\",\r\n    \"password\":\"Password@123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/auth/signup",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create blog",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MjA0YjM0OGM1ZmE4Y2I3MDhmNTI3MCIsImVtYWlsIjoiYWtoaWxlbm5lbUBnbWFpbC5jb20iLCJpYXQiOjE3NjM3MjQyMzQsImV4cCI6MTc2Mzc2MDIzNH0._ON5GGrcQJOrAzOyrEybHKFPNq9dRx0CuQNJ_eZpXM4",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\":\"new blog 3\",\r\n    \"content\":\"new content 3\",\r\n    \"authorName\":\"Akhil 3\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/blog/create",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"blog",
+						"create"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
