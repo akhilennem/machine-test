@@ -1,29 +1,89 @@
 require('dotenv').config();
 const User = require("../models/user");
+const BlogModel = require("../models/blog");
+const mongoose = require('mongoose')
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const validator = require("../validators/UserValidator");
 
 
 exports.signup = async (req, res) => {
+  let session;
+
   try {
     let { username, email, password } = req.body;
-    const { error, value } = validator.validate(req.body);
-  if(error){
-      return res.json({success:false,error:error.details})
+
+    const { error } = validator.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        success: false,
+        error: error.details,
+      });
     }
+
     const exist = await User.findOne({ email });
-    if (exist) 
-        return res.status(400).json({ success: false, message: "Email already exists" });
+    if (exist) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Email already exists" });
+    }
+
+    session = await mongoose.startSession();
+    session.startTransaction();
+
     password = await bcrypt.hash(password, 10);
-    const user = await User.create({ username, email, password });
-    res.json({
+    const [user] = await User.create(
+      [
+        {
+          username,
+          email,
+          password,
+        },
+      ],
+      { session }
+    );
+
+    const [newBlog] = await BlogModel.create(
+      [
+        {
+          title: "test",
+          content: "test",
+          authorName: username,      
+          authorID: user._id.toString(),
+        },
+      ],
+      { session }
+    );
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return res.json({
       success: true,
       message: "User registered successfully",
-      user: { id: user._id, username: user.username, email: user.email }
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+      },
+      blog: {
+        id: newBlog._id,
+        title: newBlog.title,
+      },
     });
   } catch (err) {
-   return res.status(500).json({ success: false, message: err.message });
+    if (session) {
+      try {
+        await session.abortTransaction();
+        session.endSession();
+      } catch (e) {
+      }
+    }
+
+    console.error("Signup transaction error:", err);
+    return res
+      .status(500)
+      .json({ success: false, message: err.message || "Server error" });
   }
 };
 

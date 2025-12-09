@@ -1,15 +1,20 @@
 const express=require('express')
 require('dotenv').config();
 const mongoose=require('mongoose')
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("./configs/swagger"); 
 const authMiddleware=require('./middleware/authMiddleware')
 const app=express()
 
 app.use(express.json())
 
+
+
 const authRoute =  require('./routes/authRoute')
 const blogRoute =  require('./routes/blogRoute')
 
 app.use('/auth',authRoute)
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(authMiddleware.authenticate)
 app.use('/blog',blogRoute)
 
